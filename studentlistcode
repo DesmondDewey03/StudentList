@@ -1,0 +1,123 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <iomanip>
+
+using namespace std;
+
+// Struct to store student information
+struct Student {
+    char firstName[50];
+    char lastName[50];
+    int studentID;
+    float gpa;
+};
+
+// Function prototypes
+void addStudent(vector<Student*>& students);
+void printStudents(vector<Student*>& students);
+void deleteStudent(vector<Student*>& students);
+
+int main() {
+    vector<Student*> students;
+    char command[20];
+
+    bool running = true;
+
+    while (running) {
+        cout << "\nEnter a command (ADD, PRINT, DELETE, QUIT): ";
+        cin >> command;
+
+        if (strcmp(command, "ADD") == 0) {
+            addStudent(students);
+        }
+        else if (strcmp(command, "PRINT") == 0) {
+            printStudents(students);
+        }
+        else if (strcmp(command, "DELETE") == 0) {
+            deleteStudent(students);
+        }
+        else if (strcmp(command, "QUIT") == 0) {
+            running = false;
+        }
+        else {
+            cout << "Invalid command." << endl;
+        }
+    }
+
+    vector<Student*>::iterator it;
+    for (it = students.begin(); it != students.end(); ++it) {
+        delete *it;
+    }
+
+    return 0;
+}
+
+// Adds a new student to the vector
+void addStudent(vector<Student*>& students) {
+    Student* newStudent = new Student();
+
+    cout << "Enter first name: ";
+    cin >> newStudent->firstName;
+
+    cout << "Enter last name: ";
+    cin >> newStudent->lastName;
+
+    cout << "Enter student ID: ";
+    cin >> newStudent->studentID;
+
+    cout << "Enter GPA: ";
+    cin >> newStudent->gpa;
+
+    students.push_back(newStudent);
+
+    cout << "Student added." << endl;
+}
+
+// Prints all students currently stored
+void printStudents(vector<Student*>& students) {
+    if (students.size() == 0) {
+        cout << "No students in list." << endl;
+        return;
+    }
+
+    vector<Student*>::iterator it;
+
+    for (it = students.begin(); it != students.end(); ++it) {
+        cout << (*it)->firstName << " "
+             << (*it)->lastName << ", "
+             << (*it)->studentID << ", "
+             << fixed << setprecision(2)
+             << (*it)->gpa << endl;
+    }
+}
+
+// Deletes a student based on ID number
+void deleteStudent(vector<Student*>& students) {
+    int idToDelete;
+
+    cout << "Enter student ID to delete: ";
+    cin >> idToDelete;
+
+    vector<Student*>::iterator it;
+    bool found = false;
+
+    for (it = students.begin(); it != students.end() && found == false; ++it) {
+        if ((*it)->studentID == idToDelete) {
+
+            
+            delete *it;
+
+            
+            students.erase(it);
+
+            found = true;
+
+            cout << "Student deleted." << endl;
+        }
+    }
+
+    if (found == false) {
+        cout << "Student ID not found." << endl;
+    }
+}
